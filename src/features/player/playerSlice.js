@@ -11,6 +11,8 @@ const initialState = {
   repeatMode: "none",
 };
 
+const allowedRates = [0.5, 0.75, 1.0, 1.25, 1.5];
+
 const playerSlice = createSlice({
   name: "player",
   initialState,
@@ -51,6 +53,20 @@ const playerSlice = createSlice({
         state.isMuted = false;
       }
     },
+    nextRepeatMode: (state) => {
+      if (state.repeatMode === "none") {
+        state.repeatMode = "one";
+      } else if (state.repeatMode === "one") {
+        state.repeatMode = "all";
+      } else {
+        state.repeatMode = "none";
+      }
+    },
+    setPlaybackRate: (state, action) => {
+      if (allowedRates.includes(action.payload)) {
+        state.playbackRate = action.payload;
+      }
+    },
     seekForward: (state, action) => {
       state.currentTime = Math.min(
         state.currentTime + action.payload,
@@ -68,6 +84,8 @@ export const {
   setTime,
   changeVolume,
   toggleMute,
+  nextRepeatMode,
+  setPlaybackRate,
   seekForward,
   seekBackward,
 } = playerSlice.actions;
