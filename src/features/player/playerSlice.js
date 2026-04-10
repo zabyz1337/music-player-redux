@@ -27,6 +27,30 @@ const playerSlice = createSlice({
         state.currentTime = action.payload;
       }
     },
+    changeVolume: (state, action) => {
+      let newVolume = action.payload;
+
+      if (newVolume < 0) newVolume = 0;
+      if (newVolume > 100) newVolume = 100;
+
+      state.volume = newVolume;
+
+      if (newVolume === 0) {
+        state.isMuted = true;
+      } else if (newVolume > 0 && state.isMuted) {
+        state.isMuted = false;
+      }
+    },
+    toggleMute: (state) => {
+      if (!state.isMuted) {
+        state.previousVolume = state.volume;
+        state.volume = 0;
+        state.isMuted = true;
+      } else {
+        state.volume = state.previousVolume;
+        state.isMuted = false;
+      }
+    },
     seekForward: (state, action) => {
       state.currentTime = Math.min(
         state.currentTime + action.payload,
@@ -39,6 +63,13 @@ const playerSlice = createSlice({
   },
 });
 
-export const { playPause, setTime, seekForward, seekBackward } =
-  playerSlice.actions;
+export const {
+  playPause,
+  setTime,
+  changeVolume,
+  toggleMute,
+  seekForward,
+  seekBackward,
+} = playerSlice.actions;
+
 export default playerSlice.reducer;
