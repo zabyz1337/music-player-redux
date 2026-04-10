@@ -18,8 +18,27 @@ const playerSlice = createSlice({
     playPause: (state) => {
       state.isPlaying = !state.isPlaying;
     },
+    setTime: (state, action) => {
+      if (action.payload < 0) {
+        state.currentTime = 0;
+      } else if (action.payload > state.maxTime) {
+        state.currentTime = state.maxTime;
+      } else {
+        state.currentTime = action.payload;
+      }
+    },
+    seekForward: (state, action) => {
+      state.currentTime = Math.min(
+        state.currentTime + action.payload,
+        state.maxTime,
+      );
+    },
+    seekBackward: (state, action) => {
+      state.currentTime = Math.max(state.currentTime - action.payload, 0);
+    },
   },
 });
 
-export const { playPause } = playerSlice.actions;
+export const { playPause, setTime, seekForward, seekBackward } =
+  playerSlice.actions;
 export default playerSlice.reducer;
